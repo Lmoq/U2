@@ -41,14 +41,14 @@ class U2_Device:
             setattr( self, k, v )
 
 
-    def waitElement( self, selector, timeout ):
+    def waitElement( self, selector, timeout=0 ):
         # Wait until ui element exists then returns UiObject
         try: 
             ui = self.__class__.device( **selector )
 
-            return ui \
-            if ui.wait( timeout=timeout ) \
-            else None
+            if not ui.wait( timeout = timeout ):
+                return None
+            return ui
         
         except Exception as e:
             traceback.print_exception(type(e), e, e.__traceback__, file=sys.stdout)
@@ -59,9 +59,9 @@ class U2_Device:
         try:
             ui = self.__class__.device( **base ).sibling( **sibling )
 
-            return ui \
-            if ui.wait( timeout=timeout ) \
-            else None
+            if not ui.wait( timeout = timeout ):
+                return None
+            return ui
 
         except Exception as e:
             traceback.print_exception(type(e), e, e.__traceback__, file=sys.stdout)
@@ -81,7 +81,6 @@ class U2_Device:
                 retries += 1
                 if retries > NotifLog.gInfo:
                     NotifLog.gInfo = retries
-
         return info
 
 

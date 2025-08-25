@@ -6,17 +6,12 @@ from U2.bot import Bot
 from U2.enums import Wtype, ButtonInstancePos, ButtonInstanceBounds
 from U2.debug import NotifLog, notif_, infoLog, debugLog, boxArea
 from U2.actions import adbClick, adbClickNoUi
-from U2.notif import Tracker
 
 
 class MSBot( Bot ):
     
 
     def __init__( self, **kwargs ):
-        # Time trackers
-        self.elapsed = Tracker()
-        self.interval = Tracker()
-
         # Track points
         self.points = 0
         self.task_number_points_add = 0
@@ -55,42 +50,19 @@ class MSBot( Bot ):
 
 
     def doCheck( self ):
-        # Wait for check ui to exists before switching task
-        ui = self.waitElement( self.check_selector, timeout=10 )
-        prev_task = self.tasks[ self.prev_task_number ]
-
-        if ui == None:
-            NotifLog.recheck += 1
-            notif_(1, f"Check failed:{prev_task.check_selector}")
-
-            log = f"[{self}] check timedout [{prev_task.match_selector}] @task[{prev_task.number}]"
-            debugLog( log )
-            boxArea( name = log, overlap = False )
-
-            self.current_task_number = self.prev_task_number
-            return
-
-        elif ui == "FAILED":
-            return
-        self.elapsed.trackS()
+        super().doCheck()
 
         # Increment points at specific task
         if self.prev_task_number == self.task_number_points_add:
             self.incrementPoints( self.points_increment )
 
-        notif_( 1, f"Checked[ {prev_task.check_selector} ] [ {self.elapsed} ]")
-        infoLog( f"Checked[{self.check_selector}] @task[{prev_task.number}]" )
-
-        self.current_task_number = self.next_task_number
-    
         # Avoid self checks with early return for multi bot
-        if self.multi_bot and self.current_task_number == self.end_task_number:
+        if self.multi_bot and self.prev_task_number == self.end_task_number:
             self.running = False
             return
 
         # Restart target if cycle interval take longer than usual
         if self.intervalExceed():
-            print(f"Interval exceeds : {self.interval.avgTime}")
             debugLog( f"Restart action <reason : interval exceeds[{self.interval.avgTime}]>")
             self.restartTarget( buttonBounds = self.button_bounds )
 

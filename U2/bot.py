@@ -5,7 +5,7 @@ from U2.enums import ActionType, TaskType, Wtype, Direction
 from U2.actions import vibrate, adbClick, adbType, adbSwipeUi, adbClickNoUi, switch_keyboard, adbKeyCombo
 from U2.debug import notif_, NotifLog, debugLog, infoLog, boxArea
 from U2._bot import _Bot
-from U2.notif import Stime
+from U2.notif import Stime, Tracker
 
 
 class Bot( _Bot ):
@@ -16,6 +16,10 @@ class Bot( _Bot ):
         self.start_time_restriction: Stime = None
         self.end_time_restriction: Stime = None
         self.ignore_time_restriction = False
+
+        # Time Trackers
+        self.interval = Tracker()
+        self.elapsed = Tracker()
 
         # Bool
         self.running = True
@@ -68,7 +72,7 @@ class Bot( _Bot ):
     # No handle methods
     def doCheck( self ):
         # Wait for check ui to exists before switching task
-        ui = self.waitElement( self.check_selector, timeout=10 )
+        ui = self.waitElement( self.check_selector, timeout=3 )
         prev_task = self.tasks[ self.prev_task_number ]
 
         if ui == None:
@@ -95,7 +99,7 @@ class Bot( _Bot ):
 
     def timeRestricted( self ):
         # Checks if runs at valid time
-        if self.ignoretime or ( not self.start_time_restriction or not self.end_time_restriction ):
+        if self.ignore_time_restriction or ( not self.start_time_restriction or not self.end_time_restriction ):
             return False
         stime = Stime()
 

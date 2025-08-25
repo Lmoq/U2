@@ -123,7 +123,7 @@ class _Bot( U2_Device ):
 
 
     def mainloop( self ):
-        while self.running and not self.__class__.sig_term:
+        while self.running and not _Bot.sig_term:
             try:
                 self.current_task = self.tasks[ self.current_task_number ]
                 self.handle_callback() if self.current_task.bHandle_callback else self.current_task.callback()
@@ -133,7 +133,7 @@ class _Bot( U2_Device ):
                 break
 
             except KeyboardInterrupt:
-                self.__class__.sig_term = True
+                _Bot.sig_term = True
                 break
 
 
