@@ -3,6 +3,7 @@ from pathlib import Path; sys.path.append( str(Path(__file__).parent.parent) )
 
 from U2.base import sb # subprocess
 from U2.bot import Bot
+
 from U2.enums import Wtype, ButtonInstancePos, ButtonInstanceBounds
 from U2.debug import NotifLog, notif_, infoLog, debugLog, boxArea
 from U2.actions import adbClick, adbClickNoUi
@@ -56,35 +57,39 @@ class MSBot( Bot ):
         if self.prev_task_number == self.task_number_points_add:
             self.incrementPoints( self.points_increment )
 
-        # Avoid self checks with early return for multi bot
-        if self.multi_bot and self.prev_task_number == self.end_task_number:
-            self.running = False
-            return
+        if self.prev_task_number == self.end_task_number:
+            # Avoid self checks by returning early for multi bot
+            if self.multi_bot:
+                self.running = False
+                return
 
-        # Restart target if cycle interval take longer than usual
-        if self.intervalExceed():
-            debugLog( f"Restart action <reason : interval exceeds[{self.interval.avgTime}]>")
-            self.restartTarget( buttonBounds = self.button_bounds )
+            if self.intervalExceed():
+                # Restart target if cycle interval take longer than usual
+                debugLog( f"Restart action <reason : interval exceeds[{self.interval.avgTime}]> @endTask[{self.current_task.number}]")
+                print(f"[MSBot] Reset avg : {self.interval.avgTime}")
+
+                self.restartTarget( buttonBounds = self.button_bounds )
+                self.interval.reset_avg()
 
 
     def restartTarget( self, buttonBounds : ButtonInstanceBounds = None, buttonPos : ButtonInstancePos = None, include_click = True ):
-        if not include_click: return
-
         # Restart target app when interval time exceeds average time cycle
         sb.run( f"adb shell am force-stop {self.target_package}; sleep 0.3; adb shell am start -n {self.launch_activity}", shell=True, stdout=sb.DEVNULL )
 
         self.device.wait_activity( self.launch_activity.split('/')[1] )
-        time.sleep(0.5)
+        #time.sleep(0.5)
 
-        self.interval.reset_avg()
-        print(f"Reset avg : {self.interval.avgTime}")
         NotifLog.restarts += 1
+
+        if not include_click: 
+            return
 
         if buttonPos:
             adbClickNoUi( buttonPos )
             return
 
-        # Todo // via instance number // Forcec search
+        # Perform search for ui element using instance number
+        # tailored by ui bounds checking to verify if it's the correct element
         while True:
             # Search ui
             buttonUi = None
@@ -92,10 +97,7 @@ class MSBot( Bot ):
                 buttonUi = self.waitElement({"className" : Wtype.button, "instance" : buttonBounds['number']}, timeout=0.2)
 
             # Get info
-            info = None
-            while not info:
-                info = self.getInfo( buttonUi )
-            
+            info = self.getInfo( buttonUi )
             info_bounds = info['bounds']
             ins_bounds = buttonBounds['bounds']
 
@@ -104,8 +106,8 @@ class MSBot( Bot ):
                 adbClick( info_bounds )
                 break
             else:
-                log = f"Restart Action : different bounds | info:{info_bounds} != iNBounds:{ins_bounds}"
-                debug( log )
+                log = f"Restart search : different bounds | info:{info_bounds} != iNBounds:{ins_bounds}"
+                debugLog( log )
 
 
 if __name__=='__main__':

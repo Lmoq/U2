@@ -40,6 +40,14 @@ class _Bot( U2_Device ):
         self.tasks[ number ] = task
 
 
+    def get_prev_task( self ) -> Task:
+        return self.tasks[ self.prev_task_number ]
+
+
+    def get_next_task( self ) -> Task:
+        return self.tasks[ self.next_task_number ]
+
+
     def default_match( self ) -> dict:
         # Default match function if current task match function is not defined and set
         current_task = self.current_task

@@ -41,10 +41,13 @@ class Task( dict ):
 
         # Check
         "check_selector" : {},
+        "check_selector_timeout" : 5,
 
         # Task values
         "next_task_number" : int,
-        "prev_task_number" : int
+        "prev_task_number" : int,
+
+        "next_wait_time" : 0,
     }
 
 

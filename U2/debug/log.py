@@ -56,10 +56,16 @@ class Logger:
 
     init = False
 
-    def __init__( self ):
+    def __init__( self, dir_="u2log" ):
         if Logger.init:
             return
 
+        # Setup logger path
+        self.dir_ = Path(".") / dir_
+        ld = self.dir_
+
+        ld.mkdir( parents = True, exist_ok = True )
+            
         print(f"init logger : {Logger.init}")
         Logger.init = True
         print(f"Toggled init : {Logger.init}")
@@ -72,10 +78,10 @@ class Logger:
         self.info_logger.setLevel( logging.INFO )
 
         # Setup file handlers
-        debug_file_handler = logging.FileHandler( "debug.log" )
+        debug_file_handler = logging.FileHandler( self.dir_ / "debug.log" )
         debug_file_handler.setLevel( logging.ERROR )
 
-        info_file_handler = logging.FileHandler( "info.log" )
+        info_file_handler = logging.FileHandler( self.dir_ / "info.log" )
         info_file_handler.setLevel( logging.INFO )
 
         # Set formatter
@@ -95,7 +101,7 @@ class Logger:
         self.info_logger.propagate = False
 
 
-logger = Logger()
+logger = Logger(dir_ = "logs")
 
 
 def debugLog( message : str ):

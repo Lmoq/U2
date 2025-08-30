@@ -72,14 +72,14 @@ class Bot( _Bot ):
     # No handle methods
     def doCheck( self ):
         # Wait for check ui to exists before switching task
-        ui = self.waitElement( self.check_selector, timeout=3 )
         prev_task = self.tasks[ self.prev_task_number ]
 
+        ui = self.waitElement( self.check_selector, timeout=prev_task.check_selector_timeout )
         if ui == None:
             NotifLog.recheck += 1
             notif_(1, f"Check failed:{prev_task.check_selector}")
 
-            log = f"[{self}] check timedout [{prev_task.match_selector}] @task[{prev_task.number}]"
+            log = f"[{self}] check timedout [{prev_task.check_selector}] @task[{prev_task.number}]"
             debugLog( log )
             boxArea( name = log, overlap = False )
 
@@ -91,7 +91,7 @@ class Bot( _Bot ):
 
         self.elapsed.trackS()
 
-        notif_( 1, f"Checked[ {prev_task.check_selector} ] [ {self.elapsed} ]")
+        notif_( 1, f"Checked[ {prev_task.number} ] [ {self.elapsed} ]")
         infoLog( f"Checked[{self.check_selector}] @task[{prev_task.number}]" )
 
         self.current_task_number = self.next_task_number

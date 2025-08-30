@@ -80,13 +80,13 @@ class Tracker( Time ):
             # Set a minimum interval to prevent messing with average interval
             if interval > self.min_interval:
                 self.total_intervals += interval
-                self.interval_list.append( t[1] )
+                self.interval_list.append( interval )
                 
                 self.track_calls += 1
 
                 # Calculate average
                 aoN = self.average_of_n
-                avg = self.get_total_avg() if not aoN else self.get_avg_of_n( aoN )
+                avg = self.get_avg_of_n( aoN ) or self.get_total_avg()
 
                 self.avgTime.set_seconds( avg )
             self.set_seconds( interval )
@@ -94,14 +94,19 @@ class Tracker( Time ):
 
 
     def get_total_avg( self ):
+        # Independently get total average of intervals
         if self.track_calls:
             return self.total_intervals // self.track_calls
         return 0
             
 
     def get_avg_of_n( self, aoN : int ):
+        # Get average of last n of interval in list
         if aoN and len( self.interval_list ) == aoN:
-            return sum( self.interval_list ) / aoN
+            avg = sum( self.interval_list ) / aoN
+            
+            del self.interval_list[0]
+            return avg
         return 0
 
 
