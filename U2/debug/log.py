@@ -108,8 +108,10 @@ def debugLog( message : str ):
     logger.debug_logger.error( message )
 
 
-def infoLog( message : str):
+def infoLog( message : str, stdout = False ):
     logger.info_logger.info( message )
+    if stdout:
+        print( message )
 
 if __name__=='__main__':
     pass

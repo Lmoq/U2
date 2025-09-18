@@ -1,0 +1,20 @@
+{
+    "Bot1": {
+        "current_task_number": 1,
+        "points": 3726,
+        "points_limit": 60000,
+        "points_increment": 1,
+        "start_time_restriction": null,
+        "end_time_restriction": null,
+        "restricted": false
+    }
+    "Bot2": {
+        "current_task_number": 1,
+        "points": 10,
+        "points_limit": 200,
+        "points_increment": 0.5,
+        "start_time_restriction": "Mon 00:30:00",
+        "end_time_restriction": "Sat 23:00:00",
+        "restricted": false
+    }
+}

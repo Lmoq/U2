@@ -1,4 +1,4 @@
-import sys
+import sys, time
 from pathlib import Path; sys.path.append( str(Path(__file__).parent.parent ) )
 from U2.enums import ActionType, TaskType, Wtype, Direction
 
@@ -41,7 +41,7 @@ class Bot( _Bot ):
 
     def swipe_function( self, ui_info ):
         # Swipe
-        infoLog(f"Swiping {self.current_task.match_selector} @task[{self.current_task.number}]")
+        infoLog(f"Swiping {self.current_task.match_selector} @task[{self.current_task.number}]", stdout=True)
 
         bounds = ui_info[ 'bounds' ]
         adbSwipeUi( bounds, self.current_task.swipe_direction, self.current_task.swipe_points )

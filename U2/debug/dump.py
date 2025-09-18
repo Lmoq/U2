@@ -17,7 +17,7 @@ def dump( sleep=2 ):
         f.write( d.dump_hierarchy(compressed = False) )
 
 
-def viewElement( selector, log=False, sleep=2 ):
+def viewElement( selector, uinfo=False, img_log=False, getcenter=False, sleep=2 ):
     time.sleep( sleep )
     d = u2.connect()
 
@@ -38,12 +38,27 @@ def viewElement( selector, log=False, sleep=2 ):
                 found[f"{text.split('\n')[0]}"] = info
 
             shortName = info['className'].split('.')[-1]
-            print(f"{shortName} | {repr(text)}\nBounds | {info['bounds']}\n")
+            if not uinfo:
+                print(f"{shortName} | {repr(text)}\nBounds | {info['bounds']}\n")
+            else:
+                print(f"Uinfo : {info}\n")
+            
+            
+            if getcenter:
+                coo = info['bounds']
+
+                width = coo['right'] - coo['left']
+                height = coo['bottom'] - coo['top']
+
+                x = coo['right'] - ( width // 2 )
+                y = coo['bottom'] - ( height // 2 )
+
+                print(f"center {x}:{y}")
         
         except Exception as e:
             print(f"TextWidget {selector}:{e}")
 
-    if log:
+    if img_log:
         # Draw rectangle of positions of every element found
         adbshot = path + '/adbshot.png'
         os.system(f"adb shell screencap {adbshot}")
@@ -70,7 +85,7 @@ def viewElement( selector, log=False, sleep=2 ):
                 cv.imwrite( f"{path}/{name}.png", img_copy )    
     os.system("adb shell cmd notification post -S bigtext Done Done Done &> /dev/null")
 
-def viewElements( _type, _range=(0,20), log=False, getcenter=False, sleep=2 ):
+def viewElements( _type, _range=(0,20), uinfo=False, img_log=False, getcenter=False, sleep=2 ):
     # Dump all specified widget type
     time.sleep( sleep )
     d = u2.connect()
@@ -94,7 +109,7 @@ def viewElements( _type, _range=(0,20), log=False, getcenter=False, sleep=2 ):
             found[f"Instance {i}-{info['text'].split('\n')[0]}"] = info
 
             shortName = info['className'].split('.')[-1]
-            print(f"[Instance {i}] {shortName} | {repr(info['text'])} == Bounds | {info['bounds']}")
+            print(f"[Instance {i}] {shortName} | {repr(info['text'])} == Bounds | {info['bounds'] if not uinfo else info}")
 
             if getcenter:
                 coo = info['bounds']
@@ -110,7 +125,7 @@ def viewElements( _type, _range=(0,20), log=False, getcenter=False, sleep=2 ):
         except Exception as e:
             continue
 
-    if log:
+    if img_log:
         # Draw rectangle of positions of every element found
         adbshot = path + '/adbshot.png'
         os.system(f"adb shell screencap {adbshot}")

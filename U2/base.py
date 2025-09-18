@@ -44,7 +44,7 @@ class U2_Device:
     def waitElement( self, selector, timeout=0 ):
         # Wait until ui element exists then returns UiObject
         try: 
-            ui = self.__class__.device( **selector )
+            ui = self.device( **selector )
 
             if not ui.wait( timeout = timeout ):
                 return None
@@ -57,7 +57,7 @@ class U2_Device:
 
     def waitSiblingElement( self, base={}, sibling={}, timeout=0 ):
         try:
-            ui = self.__class__.device( **base ).sibling( **sibling )
+            ui = self.device( **base ).sibling( **sibling )
 
             if not ui.wait( timeout = timeout ):
                 return None

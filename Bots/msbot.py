@@ -88,8 +88,8 @@ class MSBot( Bot ):
             adbClickNoUi( buttonPos )
             return
 
-        # Perform search for ui element using instance number
-        # tailored by ui bounds checking to verify if it's the correct element
+        # Perform a search for ui element using instance number
+        # refined by ui bounds checking to ensure it's the correct element
         while True:
             # Search ui
             buttonUi = None
@@ -101,7 +101,7 @@ class MSBot( Bot ):
             info_bounds = info['bounds']
             ins_bounds = buttonBounds['bounds']
 
-            # Compare bounds
+            # Verify bounds
             if info_bounds == ins_bounds:
                 adbClick( info_bounds )
                 break

@@ -1,4 +1,4 @@
-import cv2 as cv
+mport cv2 as cv
 import os, time, re
 
 count = 0

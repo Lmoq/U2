@@ -1,4 +1,4 @@
-import os, sys, traceback
+import os, sys, traceback, time
 from pathlib import Path; sys.path.append( str(Path(__file__).parent.parent) )
 
 from U2.base import U2_Device
@@ -122,6 +122,8 @@ class _Bot( U2_Device ):
                 return
 
         # Task action
+        if self.current_task.delay: time.sleep( self.current_task.delay )
+
         result = self.current_task.callback( ui_info )
         if not result:
             debugLog( f"Action failed @task[{self.current_task.number}]" )

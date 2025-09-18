@@ -4,6 +4,7 @@ class Wtype:
     text = "android.view.ViewGroup"
     button = "android.widget.Button"
     editText = "android.widget.EditText"
+    image = "android.widget.ImageView"
 
 
 class ActionType:

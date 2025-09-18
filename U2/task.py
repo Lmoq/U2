@@ -25,6 +25,7 @@ class Task( dict ):
             # Click
         "offsetx" : 0,
         "offsety" : 0,
+        "delay" : 0,
         "noUiClick" : None,
 
             # Swipe
